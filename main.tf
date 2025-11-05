@@ -34,13 +34,19 @@ resource "aws_instance" "instance_jewerly" {
   }
 
   user_data = <<-EOF
-              #!/bin/bash
-              apt update -y
-              apt install nginx -y
-              systemctl start nginx
-              systemctl enable nginx
-              echo "<h1>Hello from NGINX on Debian EC2!</h1>" > /var/www/html/index.html
-              EOF
+    #!/bin/bash
+    set -e
+    apt update -y
+    apt install -y docker.io git unzip curl
+    systemctl enable docker
+    systemctl start docker
+    cd /home/admin 2>/dev/null || cd /root
+    git clone https://github.com/juliakreling/proway-desafio-iac.git app
+    cd app
+
+    docker build -t docker-joalheria .
+    docker run docker-joalheria 
+    EOF
 
 }
 
