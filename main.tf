@@ -36,16 +36,42 @@ resource "aws_instance" "instance_jewerly" {
   user_data = <<-EOF
     #!/bin/bash
     set -e
+
+    echo "[INFO] Iniciando configuração da instância Debian..."
+
+    # Atualiza pacotes e instala dependências
+    echo "[INFO] Atualizando pacotes..."
     apt update -y
     apt install -y docker.io git unzip curl
+
+    # Habilita e inicia o Docker
+    echo "[INFO] Habilitando e iniciando Docker..."
     systemctl enable docker
     systemctl start docker
-    cd /home/admin 2>/dev/null || cd /root
-    git clone https://github.com/juliakreling/proway-desafio-iac.git app
-    cd app
 
+    # Acessa diretório padrão
+    cd /home/admin 2>/dev/null || cd /home/ubuntu 2>/dev/null || cd /root
+
+    # Clona ou atualiza o repositório
+    echo "[INFO] Clonando repositório..."
+    if [ -d "proway-desafio-iac" ]; then
+      echo "[INFO] Repositório já existe. Atualizando..."
+      cd proway-desafio-iac
+      git pull
+    else
+      git clone https://github.com/juliakreling/proway-desafio-iac.git
+      cd proway-desafio-iac
+    fi
+
+    # Constrói a imagem Docker
+    echo "[INFO] Construindo imagem Docker..."
     docker build -t docker-joalheria .
-    docker run docker-joalheria 
+
+    # Executa o container (porta 80)
+    echo "[INFO] Iniciando container..."
+    docker run -d -p 80:80 docker-joalheria
+
+    echo "[INFO] Setup concluído com sucesso!"
     EOF
 
 }
