@@ -1,10 +1,12 @@
-.terraform*
-dist
-terraform
-package-lock*
+# Node.js
 node_modules
-*.tfstate
-*.tfstate.backup
+dist
+package-lock*
+
+# Terraform
 .terraform/
-.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
 terraform.tfplan
+.terraform.lock.hcl
+
