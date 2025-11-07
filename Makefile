@@ -1,6 +1,6 @@
 IMAGE_NAME = docker-jewelry-app
-PORT_LOCAL = 8080
-PORT_CONTAINER = 80
+PORT_LOCAL = 80
+PORT_CONTAINER = 8080
 
 # 1. Fluxo Terraform (infra AWS)
 
@@ -45,4 +45,5 @@ clean:
 	rm -rf node_modules dist .terraform terraform.tfstate* tfplan
 	@docker rm -f $(IMAGE_NAME) >/dev/null 2>&1 || true
 	@docker rmi $(IMAGE_NAME) >/dev/null 2>&1 || true
+
 
