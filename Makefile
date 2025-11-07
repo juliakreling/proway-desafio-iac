@@ -17,7 +17,6 @@ apply: plan
 
 aws-deploy: apply
 	@echo "[INFO] Aguarde alguns minutos para a aplicação inicializar..."
-	@echo "URL: http://$$(terraform output -raw instance_public_ip):$(PORT_LOCAL)"
 
 aws-destroy:
 	terraform destroy -auto-approve

@@ -10,18 +10,6 @@ Aplicação Vue.js para exibição de joias com deploy automatizado na AWS utili
 
 ## Execução Local
 
-### Desenvolvimento
-
-```bash
-# Instalar dependências
-npm install
-
-# Executar em modo desenvolvimento
-npm run dev
-```
-
-Acesse: http://localhost:5173
-
 ### Docker Local
 
 ```bash
@@ -30,28 +18,26 @@ make docker-run
 
 # Ou manualmente
 docker build -t jewelry-app .
-docker run -p 8080:80 jewelry-app
+docker run jewelry-app
 ```
 
 Acesse: http://localhost:8080
 
-## Deploy no Azure
+## Deploy na AWS
 
 ### Configuração Inicial
 
 ```bash
-# Login no Azure
-az login
-
-# Configurar credenciais (se necessário)
-az account set --subscription "sua-subscription-id"
+export AWS_ACCESS_KEY_ID="sua-access-key"
+export AWS_SECRET_ACCESS_KEY="sua-secret-key"
+export AWS_DEFAULT_REGION="sua região padrão"
 ```
 
 ### Deploy Automatizado
 
 ```bash
 # Deploy completo (build + infraestrutura + aplicação)
-make azure-deploy
+make aws-deploy
 ```
 
 ### Deploy Manual
@@ -80,7 +66,7 @@ make build
 make clean
 
 # Destruir infraestrutura Azure
-make azure-destroy
+make aws-destroy
 ```
 
 ## Estrutura do Projeto
@@ -96,7 +82,7 @@ make azure-destroy
 
 O Terraform provisiona:
 
-- VM Linux com Docker
+- VM com Docker
 - IP Público
 
 A aplicação roda na porta 8080 da VM.
