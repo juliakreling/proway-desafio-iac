@@ -1,17 +1,17 @@
 # Jewelry App
 
-Aplicação Vue.js para exibição de joias com deploy automatizado no Azure usando Terraform.
+Aplicação Vue.js para exibição de joias com deploy automatizado na AWS utilizando Terraform.
 
 ## Pré-requisitos
 
 - Node.js 18+
 - Docker
 - Terraform
-- Azure CLI (para deploy)
 
 ## Execução Local
 
 ### Desenvolvimento
+
 ```bash
 # Instalar dependências
 npm install
@@ -19,9 +19,11 @@ npm install
 # Executar em modo desenvolvimento
 npm run dev
 ```
+
 Acesse: http://localhost:5173
 
 ### Docker Local
+
 ```bash
 # Usando Makefile
 make docker-run
@@ -30,11 +32,13 @@ make docker-run
 docker build -t jewelry-app .
 docker run -p 8080:80 jewelry-app
 ```
+
 Acesse: http://localhost:8080
 
 ## Deploy no Azure
 
 ### Configuração Inicial
+
 ```bash
 # Login no Azure
 az login
@@ -44,12 +48,14 @@ az account set --subscription "sua-subscription-id"
 ```
 
 ### Deploy Automatizado
+
 ```bash
 # Deploy completo (build + infraestrutura + aplicação)
 make azure-deploy
 ```
 
 ### Deploy Manual
+
 ```bash
 # 1. Inicializar Terraform
 make init
@@ -84,15 +90,12 @@ make azure-destroy
 ├── main.tf        # Configuração Terraform
 ├── Dockerfile     # Container da aplicação
 ├── Makefile       # Comandos automatizados
-└── deploy.sh      # Script de deploy
 ```
 
-## Infraestrutura Azure
+## Infraestrutura AWS
 
 O Terraform provisiona:
-- Resource Group
-- Virtual Network e Subnet
-- Network Security Group
+
 - VM Linux com Docker
 - IP Público
 

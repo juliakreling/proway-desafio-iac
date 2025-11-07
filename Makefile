@@ -1,29 +1,46 @@
+IMAGE_NAME = docker-jewelry-app
+PORT_LOCAL = 8080
+PORT_CONTAINER = 80
+
+# 1. Fluxo Terraform (infra AWS)
+
 default: aws-deploy
+
 init:
-	terraform init
+	terraform init 
 
 plan: init
-	terraform plan
+	terraform plan 
 
 apply: plan
 	terraform apply -auto-approve
+
+aws-deploy: apply
+	@echo "[INFO] Aguarde alguns minutos para a aplicação inicializar..."
+	@echo "URL: http://$$(terraform output -raw instance_public_ip):$(PORT_LOCAL)"
+
+aws-destroy:
+	terraform destroy -auto-approve
+
+# 2. Fluxo local / EC2
 
 build:
 	npm install
 	npm run build
 
-clean:
-	rm -rf node_modules dist .terraform terraform.tfstate*
-
-docker-build:
-	docker build -t docker-jewelry-app .
+docker-build: build
+	docker build -t $(IMAGE_NAME) .
 
 docker-run: docker-build
-	docker run -p 8080:80 docker-jewelry-app
+	@docker rm -f $(IMAGE_NAME) >/dev/null 2>&1 || true
+	docker run -d -p $(PORT_LOCAL):$(PORT_CONTAINER) --name $(IMAGE_NAME) $(IMAGE_NAME)
+	@echo "[INFO] Aplicação rodando em http://localhost:$(PORT_LOCAL)"
 
-aws-deploy: apply
-	@echo "Aguarde alguns minutos para a aplicação inicializar..."
-	@echo "URL: http://$$(terraform output -raw vm_public_ip):8080"
+setup: docker-run
 
-aws-destroy:
-	terraform destroy -auto-approve
+clean:
+	@echo "[INFO] Limpando artefatos..."
+	rm -rf node_modules dist .terraform terraform.tfstate* tfplan
+	@docker rm -f $(IMAGE_NAME) >/dev/null 2>&1 || true
+	@docker rmi $(IMAGE_NAME) >/dev/null 2>&1 || true
+
