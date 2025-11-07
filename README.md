@@ -69,20 +69,11 @@ make clean
 make aws-destroy
 ```
 
-## Estrutura do Projeto
-
-```
-├── src/           # Código fonte Vue.js
-├── main.tf        # Configuração Terraform
-├── Dockerfile     # Container da aplicação
-├── Makefile       # Comandos automatizados
-```
-
 ## Infraestrutura AWS
 
 O Terraform provisiona:
 
-- VM com Docker
+- VM EC2 com Docker
 - IP Público
 
-A aplicação roda na porta 8080 da VM.
+A aplicação roda na porta 8080 da EC2.
