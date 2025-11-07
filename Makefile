@@ -1,6 +1,6 @@
 IMAGE_NAME = docker-jewelry-app
-PORT_LOCAL = 80
-PORT_CONTAINER = 8080
+PORT_LOCAL = 8080
+PORT_CONTAINER = 80
 
 # 1. Fluxo Terraform (infra AWS)
 
@@ -19,6 +19,7 @@ apply: plan
 	terraform apply -auto-approve
 
 aws-deploy: apply
+	@echo "URL: http://$$(terraform output -raw vm_public_ip):8080"
 	@echo "[INFO] Aguarde alguns minutos para a aplicação inicializar..."
 
 aws-destroy:
