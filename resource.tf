@@ -19,7 +19,18 @@ resource "aws_instance" "instance_jewerly" {
     # Atualiza pacotes e instala dependências
     echo "[INFO] Atualizando pacotes..."
     apt-get update -y
-    apt-get install -y docker.io git make unzip curl
+    apt-get install -y ca-certificates curl gnupg git make unzip docker.io
+
+    # Instala Node.js 18 (via NodeSource)
+    echo "[INFO] Instalando Node.js 18..."
+    curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+    apt-get install -y nodejs
+
+    # Verifica versões instaladas
+    echo "[INFO] Versões instaladas:"
+    node -v
+    npm -v
+    docker -v
 
     # Habilita e inicia o Docker
     echo "[INFO] Habilitando e iniciando Docker..."
