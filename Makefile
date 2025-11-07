@@ -9,7 +9,10 @@ default: aws-deploy
 init:
 	terraform init 
 
-plan: init
+fmt: init
+	terraform fmt 
+
+plan: fmt
 	terraform plan 
 
 apply: plan

@@ -12,36 +12,46 @@ resource "aws_instance" "instance_jewerly" {
 
   user_data = <<-EOF
     #!/bin/bash
-    set -e
+    exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
 
     echo "[INFO] Iniciando configuração da instância Debian..."
 
     # Atualiza pacotes e instala dependências
     echo "[INFO] Atualizando pacotes..."
-    apt update -y
-    apt install -y docker.io git make unzip curl
+    apt-get update -y
+    apt-get install -y docker.io git make unzip curl
 
     # Habilita e inicia o Docker
     echo "[INFO] Habilitando e iniciando Docker..."
     systemctl enable docker
     systemctl start docker
 
-    # Acessa diretório padrão
-    cd /home/admin 2>/dev/null || cd /home/ubuntu 2>/dev/null || cd /root
+    # Define diretório de trabalho
+    cd /root
 
     # Clona o repositório se ainda não existir
     if [ ! -d "proway-desafio-iac" ]; then
       echo "[INFO] Clonando repositório..."
       git clone https://github.com/juliakreling/proway-desafio-iac.git
+    else
+      echo "[INFO] Repositório já existe. Atualizando..."
+      cd proway-desafio-iac
+      git pull
+      cd ..
     fi
 
+    # Acessa o diretório do projeto
     cd proway-desafio-iac
 
-    # Atualiza o repositório e executa o Makefile
-    echo "[INFO] Atualizando repositório e executando Makefile..."
-    git pull
-    make setup
+    # Dá permissão de execução se necessário
+    chmod +x Makefile 2>/dev/null || true
+
+    # Executa o Makefile
+    echo "[INFO] Executando make setup..."
+    make setup || echo "[WARN] Falha ao executar make setup"
 
     echo "[INFO] Setup concluído com sucesso!"
   EOF
+
 }
+
